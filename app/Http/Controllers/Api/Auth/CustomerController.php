@@ -36,6 +36,15 @@ class CustomerController extends Controller
         return redirect('customers.index');
     }
 
+    public function update(Request $request, $id) {
+        // $accessToken = $this->getAccessToken();
+        // Http::withHeaders(['Authorization' => 'Zoho-oauthtoken ' . $accessToken['access_token']])->post('https://www.zohoapis.com/billing/v1/customers', [
+        //     'display_name' => $request->name,
+        //     'email' => $request->email,
+        // ]);
+        // return redirect('customers.index');
+    }
+
     public function show($id) {
 
         $accessToken = $this->getAccessToken();
@@ -49,8 +58,21 @@ class CustomerController extends Controller
         }
         // return $customer;
         return view('api.auth.customers.show', compact('customer'));
+    }
 
+    public function edit($id) {
 
+        $accessToken = $this->getAccessToken();
+
+        if ($id) {
+            $response = Http::withHeaders(['Authorization' => 'Zoho-oauthtoken ' . $accessToken['access_token']])->get('https://www.zohoapis.com/billing/v1/customers/' . $id);
+            if ($response->successful()) {
+                $customer = json_decode($response, true);
+                $customer = $customer['customer'];
+            }
+        }
+        // return $id;
+        return view('api.auth.customers.edit', compact('customer'));
     }
 
     private function getAccessToken() {

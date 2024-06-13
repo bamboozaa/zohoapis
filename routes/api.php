@@ -23,4 +23,7 @@ Route::prefix('customers')->as('customers.')->controller(\App\Http\Controllers\A
     Route::get('create', 'create')->name('create');
     Route::post('store', 'store')->name('store');
     Route::get('show/{id}', 'show')->name('show');
+    Route::get('{id}/edit', 'edit')->name('edit');
+    Route::any('update/{id}', 'update')->name('update');
+    Route::delete('destroy/{id}', 'destroy')->name('destroy');
 });
