@@ -33,16 +33,16 @@ class CustomerController extends Controller
             'display_name' => $request->name,
             'email' => $request->email,
         ]);
-        return redirect('customers.index');
+        return redirect()->route('customers.index');
     }
 
     public function update(Request $request, $id) {
-        // $accessToken = $this->getAccessToken();
-        // Http::withHeaders(['Authorization' => 'Zoho-oauthtoken ' . $accessToken['access_token']])->post('https://www.zohoapis.com/billing/v1/customers', [
-        //     'display_name' => $request->name,
-        //     'email' => $request->email,
-        // ]);
-        // return redirect('customers.index');
+        $accessToken = $this->getAccessToken();
+        Http::withHeaders(['Authorization' => 'Zoho-oauthtoken ' . $accessToken['access_token']])->put('https://www.zohoapis.com/billing/v1/customers/' . $id, [
+            'display_name' => $request->name,
+            'email' => $request->email,
+        ]);
+        return redirect()->route('customers.index');
     }
 
     public function show($id) {
@@ -73,6 +73,16 @@ class CustomerController extends Controller
         }
         // return $id;
         return view('api.auth.customers.edit', compact('customer'));
+    }
+
+    public function destroy($id) {
+
+        $accessToken = $this->getAccessToken();
+
+        Http::withHeaders(['Authorization' => 'Zoho-oauthtoken ' . $accessToken['access_token']])->delete('https://www.zohoapis.com/billing/v1/customers/' . $id);
+
+        return redirect()->route('customers.index');
+
     }
 
     private function getAccessToken() {

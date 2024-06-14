@@ -15,6 +15,7 @@
                 <input type="email" name="email" class="form-control" value="{{ $customer['email'] }}">
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
+            <a class="btn btn-info" href="{{ url()->previous() }}">Go Back</a>
         </form>
     </div>
 </div>
