@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+use DataTables;
 
 class LeadController extends Controller
 {
@@ -25,6 +27,15 @@ class LeadController extends Controller
      */
     public function index()
     {
+        // $data = [
+        //     'data' => [
+        //         "Lead_Source" => "Employee Referral",
+        //         "Last_Name" => "Daly",
+        //         "First_Name" => "Paul",
+        //         "Email" => "p.daly@zylker.com",
+        //     ]
+        // ];
+        // return response()->json($data);
         // return $this->getAccessToken();
         $accessToken = $this->getAccessToken();
         // $leads = null;
@@ -40,6 +51,10 @@ class LeadController extends Controller
 
         // dd($leads);
 
+        // return Datatables::of($leads)
+        //             ->addIndexColumn()
+        //             ->make(true);
+
         return view('api.leads.index', compact('leads'));
     }
 
@@ -48,7 +63,7 @@ class LeadController extends Controller
      */
     public function create()
     {
-        //
+        return view('api.leads.create');
     }
 
     /**
@@ -56,7 +71,45 @@ class LeadController extends Controller
      */
     public function store(Request $request)
     {
-        return response()->download('downloads/DM2024_en.pdf');
+        $accessToken = $this->getAccessToken();
+        $client = new Client();
+        $headers = [
+            'Authorization' => 'Zoho-oauthtoken ' . $accessToken['access_token'],
+            'Content-Type' => 'application/json'
+        ];
+        $url = 'https://www.zohoapis.com/crm/v6/Leads';
+
+
+        $recordData = [
+            [
+                'First_Name' => $request->input('First_Name', $request->first_name),
+                'Last_Name' => $request->input('Last_Name', $request->last_name),
+                'Email' => $request->input('Email', $request->email),
+                'Lead_Source' => $request->input('Lead_Source', 'Download')
+            ]
+        ];
+
+        try {
+
+            $response = $client->post($url , [
+                'headers' => [
+                    'Authorization' => 'Zoho-oauthtoken ' . $accessToken['access_token'],
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => ['data' => $recordData]
+            ]);
+
+            $responseBody = json_decode($response->getBody(), true);
+
+
+            // return response()->json(['message' => 'Record inserted successfully', 'data' => $responseBody], 200);
+            return response()->json(['success' => 'Record inserted successfully'], 200);
+            // return response()->download('downloads/DM2024_en.pdf');
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error inserting record', 'error' => $e->getMessage()], 500);
+        }
+
+        // return response()->download('downloads/DM2024_en.pdf');
     }
 
     /**
