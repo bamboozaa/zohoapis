@@ -32,7 +32,6 @@ Route::prefix('leads')->as('leads.')->controller(\App\Http\Controllers\Api\LeadC
     Route::get('index', 'index')->name('index');
     Route::get('create', 'create')->name('create');
     Route::post('store', 'store')->name('store');
-    Route::get('store', 'store')->name('zohostore');
     Route::get('show/{id}', 'show')->name('show');
     Route::get('{id}/edit', 'edit')->name('edit');
     Route::any('update/{id}', 'update')->name('update');
