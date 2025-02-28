@@ -89,7 +89,7 @@ class LeadController extends Controller
                 // 'Nationality_(Online_app.)' => $request->input('Nationality_(Online_app.)', $request->nationality),
                 'Country' => $request->input('Country', $request->country),
                 'Lead_Source' => $request->input('Lead_Source', 'Download'),
-                'Description' => $request->input('Description', 'UTCC Privacy Policy'),
+                'Description' => $request->input('Description', $request->description),
             ]
         ];
 
